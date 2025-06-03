@@ -23,11 +23,9 @@ pipeline {
     stage('SonarCloud Analysis') { 
         steps {
                 withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-                    withEnv(["PATH+SCANNER=/opt/sonar-scanner/bin"]) {
                         sh '''
                             sonar-scanner -Dsonar.login=$SONAR_TOKEN
                         '''
-                    }
                 }
         }
     }
