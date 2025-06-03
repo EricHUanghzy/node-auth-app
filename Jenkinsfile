@@ -3,19 +3,20 @@ pipeline {
 
   environment {
     DOCKER_IMAGE = "node-auth-app:latest"
+    PATH = "/usr/local/bin:/usr/bin:/bin"
   }
 
   stages {
     stage('Build') {
       steps {
-        sh '/usr/local/bin/docker build --no-cache -t $DOCKER_IMAGE .'
+        sh 'docker build --no-cache -t $DOCKER_IMAGE .'
       }
     }
 
     stage('Test') {
       steps {
-        sh '/usr/local/bin/npm install'
-        sh '/usr/local/bin/npm test || true' // Allow test failures for demo
+        sh 'npm install'
+        sh 'npm test || true' // Allow test failures for demo
       }
     }
 
@@ -38,7 +39,7 @@ pipeline {
         curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b ./bin
 
         echo "Running npm audit..."
-        /usr/local/bin/npm audit --audit-level=low || true
+        npm audit --audit-level=low || true
 
         echo "Running Trivy on source code..."
         ./bin/trivy fs . || true
@@ -48,9 +49,9 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        sh '/usr/local/bin/docker stop node-auth-app || true '
-        sh '/usr/local/bin/docker rm node-auth-app || true '
-        sh '/usr/local/bin/docker run -d -p 3000:3000 --name node-auth-app ${DOCKER_IMAGE}'
+        sh 'docker stop node-auth-app || true '
+        sh 'docker rm node-auth-app || true '
+        sh 'docker run -d -p 3000:3000 --name node-auth-app ${DOCKER_IMAGE}'
         //sh 'node app.js &'
       }
     }
