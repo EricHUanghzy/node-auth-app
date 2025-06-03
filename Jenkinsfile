@@ -14,8 +14,8 @@ pipeline {
 
     stage('Test') {
       steps {
-        sh 'npm install'
-        sh 'npm test || true' // Allow test failures for demo
+        sh '/usr/local/bin/npm install'
+        sh '/usr/local/bin/npm test || true' // Allow test failures for demo
       }
     }
 
@@ -38,7 +38,7 @@ pipeline {
         curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b ./bin
 
         echo "Running npm audit..."
-        npm audit --audit-level=low || true
+        /usr/local/bin/npm audit --audit-level=low || true
 
         echo "Running Trivy on source code..."
         ./bin/trivy fs . || true
